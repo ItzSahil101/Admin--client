@@ -8,7 +8,7 @@ export default function EditProduct({ initialData, onClose, onSave }) {
     desc: initialData.desc || "",
     price: initialData.price || "",
     discount: initialData.discount || "",
-    category: initialData.category || "",
+    category: initialData.category || "ALL",
     stock: initialData.stock || "",
   });
 

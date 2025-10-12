@@ -9,7 +9,7 @@ export default function AddProduct({ onClose, onSuccess }) {
     desc: "",
     price: "",
     discount: "",
-    category: "",
+    category: "ALL",
     stock: "",
   });
 
@@ -144,9 +144,9 @@ export default function AddProduct({ onClose, onSuccess }) {
                   required
                   className="w-full px-4 py-2 border border-blue-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
                 >
-                  <option value="tech">Tech</option>
-                  <option value="clothes">Clothes</option>
-                  <option value="gym">Gym</option>
+                  <option value="ALL">All</option>
+                  <option value="ALL">ALL</option>
+                  <option value="ALL">ALL</option>
                 </select>
               )}
             </div>
