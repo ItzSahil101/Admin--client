@@ -14,7 +14,7 @@ const Navbar = () => {
             textShadow: "0 2px 6px rgba(0,0,0,0.25)",
           }}
         >
-          <a href="/">NepCart Admin</a>
+          <a href="/">NepMart Admin</a>
         </h1>
         <div className="flex gap-4 items-center">
           <div
