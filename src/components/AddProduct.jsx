@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { FaTimes } from "react-icons/fa";
 
@@ -13,18 +13,7 @@ export default function AddProduct({ onClose, onSuccess }) {
     stock: "",
   });
 
-  const [productType, setProductType] = useState("custom");
-
-  // When productType changes, update category accordingly
-  useEffect(() => {
-    if (productType === "custom") {
-      // auto set category to 'custom' and clear input field value for category
-      setFormData((prev) => ({ ...prev, category: "custom" }));
-    } else {
-      // reset category for normal product (empty or default to first dropdown option)
-      setFormData((prev) => ({ ...prev, category: "tech" }));
-    }
-  }, [productType]);
+  // normal product flow — default category set in initial state
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +32,7 @@ export default function AddProduct({ onClose, onSuccess }) {
 
     try {
       await axios.post(
-        `https://admin-server-2aht.onrender.com/api/products/${productType}`,
+        `https://admin-server-2aht.onrender.com/api/products/data`,
         finalData
       );
       onSuccess(); // refresh list
@@ -69,29 +58,7 @@ export default function AddProduct({ onClose, onSuccess }) {
           Create New Product
         </h2>
 
-        {/* Type Selector */}
-        <div className="mb-6 flex gap-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="type"
-              value="data"
-              checked={productType === "data"}
-              onChange={() => setProductType("data")}
-            />
-            <span className="text-sm font-medium text-gray-700">Normal</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="type"
-              value="custom"
-              checked={productType === "custom"}
-              onChange={() => setProductType("custom")}
-            />
-            <span className="text-sm font-medium text-gray-700">Custom</span>
-          </label>
-        </div>
+        {/* (Removed type selector) Always create a normal product */}
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -126,29 +93,19 @@ export default function AddProduct({ onClose, onSuccess }) {
                 Category
               </label>
 
-              {productType === "custom" ? (
-                // If custom, fixed category (readonly input)
-                <input
-                  type="text"
-                  name="category"
-                  value="custom"
-                  readOnly
-                  className="w-full px-4 py-2 border border-blue-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              ) : (
-                // If normal, dropdown select
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-blue-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
-                >
-                  <option value="ALL">All</option>
-                  <option value="ALL">ALL</option>
-                  <option value="ALL">ALL</option>
-                </select>
-              )}
+              {/* Category select for normal products */}
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-blue-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
+              >
+                <option value="ALL">All</option>
+                <option value="tech">Tech</option>
+                <option value="fashion">Fashion</option>
+                <option value="home">Home</option>
+              </select>
             </div>
           </div>
 
