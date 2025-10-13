@@ -142,6 +142,12 @@ const OrderPage = () => {
                       : "N/A"}
                   </span>
                 </p>
+                <p>
+                  <strong>Custom Msg:</strong>{" "}
+                  <span className="bg-pink-200 text-black rounded px-2 py-1">
+                    {order.cmsg || "N/A"}
+                  </span>
+                </p>
                 {/* <button
                   onClick={() =>
                     openModal(
