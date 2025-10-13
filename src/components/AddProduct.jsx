@@ -103,7 +103,7 @@ export default function AddProduct({ onClose, onSuccess }) {
               >
                 <option value="gym">(Gym +suppliment)</option>
                 <option value="tech">Electronic</option>
-                <option value="fashion">Fashion</option>
+                <option value="fashion">Clothes</option>
                 <option value="gw">Gym Wear</option>
                 <option value="sport">Sports</option>
                 <option value="sketch">Sketch</option>
