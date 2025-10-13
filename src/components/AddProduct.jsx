@@ -106,7 +106,10 @@ export default function AddProduct({ onClose, onSuccess }) {
                 <option value="fashion">Fashion</option>
                 <option value="home">Kitchen Equipment</option>
                 <option value="gw">Gym Wear</option>
-                <option value="extra">Extra</option>
+                <option value="sport">Sports</option>
+                <option value="sketch">Sketch</option>
+                <option value="book">Books</option>
+
               </select>
             </div>
           </div>
