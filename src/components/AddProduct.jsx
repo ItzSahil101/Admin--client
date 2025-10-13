@@ -101,7 +101,7 @@ export default function AddProduct({ onClose, onSuccess }) {
                 required
                 className="w-full px-4 py-2 border border-blue-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
               >
-                <option value="ALL">All</option>
+                <option value="gym">Gym</option>
                 <option value="tech">Tech</option>
                 <option value="fashion">Fashion</option>
                 <option value="home">Home</option>
