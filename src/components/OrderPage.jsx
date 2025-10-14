@@ -158,6 +158,7 @@ const fetchUserName = async (userId) => {
       <div className="p-6 space-y-12 max-w-7xl mx-auto">
         {/* Normal Orders */}
         <section>
+          {console.log(orders)}
           <h2 className="text-2xl font-bold text-blue-700 mb-6 uppercase tracking-widest">
             Normal Orders
           </h2>
