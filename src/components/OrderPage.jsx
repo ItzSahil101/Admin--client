@@ -168,6 +168,8 @@ const OrderPage = () => {
                   </p>
                 </div>
 
+                {console.log(order)}
+
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   <button
                     onClick={() => handlePreviewOrder(order.productId)}
