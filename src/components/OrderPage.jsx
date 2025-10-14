@@ -20,26 +20,25 @@ const OrderPage = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [previewProduct, setPreviewProduct] = useState(null);
 
- // ✅ Function to fetch username by userId
-const fetchUserName = async (userId) => {
-  if (!userId || userNames[userId]) return; // avoid refetching
+  // ✅ Function to fetch username by userId
+  const fetchUserName = async (userId) => {
+    if (!userId || userNames[userId]) return; // avoid refetching
 
-  try {
-    const res = await axios.get(
-      `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
-    );
+    try {
+      const res = await axios.get(
+        `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
+      );
 
-    if (res.data && res.data.userName) {
-      setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
-    } else {
+      if (res.data && res.data.userName) {
+        setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
+      } else {
+        setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
+      }
+    } catch (err) {
+      console.error("Error fetching user name:", err);
       setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
     }
-  } catch (err) {
-    console.error("Error fetching user name:", err);
-    setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
-  }
-};
-
+  };
 
   // Fetch orders
   useEffect(() => {
@@ -307,55 +306,54 @@ const fetchUserName = async (userId) => {
       </div>
 
       {/* Product Preview Modal */}
-     {/* Product Preview Modal */}
-{productModalOpen && previewProduct && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-auto">
-    <div className="relative bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
-      {/* Close Button */}
-      <button
-        onClick={closeProductModal}
-        className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white text-gray-800 hover:text-gray-900 font-bold w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110"
-        aria-label="Close modal"
-      >
-        &times;
-      </button>
+      {/* Product Preview Modal */}
+      {productModalOpen && previewProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-auto">
+          <div className="relative bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
+            {/* Close Button */}
+            <button
+              onClick={closeProductModal}
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-orange-500 text-white font-bold w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110"
+              aria-label="Close modal"
+            >
+              &times;
+            </button>
 
-      {/* Product Image */}
-      {previewProduct.url && (
-        <img
-          src={previewProduct.url}
-          alt={previewProduct.name}
-          className="w-full h-48 sm:h-56 md:h-60 object-contain"
-        />
+            {/* Product Image */}
+            {previewProduct.url && (
+              <img
+                src={previewProduct.url}
+                alt={previewProduct.name}
+                className="w-full h-48 sm:h-56 md:h-60 object-contain"
+              />
+            )}
+
+            {/* Product Info */}
+            <div className="p-6 space-y-3">
+              <h3 className="text-2xl sm:text-3xl font-bold text-center">
+                {previewProduct.name}
+              </h3>
+              <p className="text-gray-700">
+                <strong>Description:</strong> {previewProduct.desc || "N/A"}
+              </p>
+              <p className="text-gray-700">
+                <strong>Price:</strong> ₹{previewProduct.price}
+              </p>
+              {previewProduct.discount && (
+                <p className="text-green-600 font-semibold">
+                  Discount: {previewProduct.discount}
+                </p>
+              )}
+              <p className="text-gray-700">
+                <strong>Category:</strong> {previewProduct.category || "N/A"}
+              </p>
+              <p className="text-gray-700">
+                <strong>Stock:</strong> {previewProduct.stock || "N/A"}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
-
-      {/* Product Info */}
-      <div className="p-6 space-y-3">
-        <h3 className="text-2xl sm:text-3xl font-bold text-center">
-          {previewProduct.name}
-        </h3>
-        <p className="text-gray-700">
-          <strong>Description:</strong> {previewProduct.desc || "N/A"}
-        </p>
-        <p className="text-gray-700">
-          <strong>Price:</strong> ₹{previewProduct.price}
-        </p>
-        {previewProduct.discount && (
-          <p className="text-green-600 font-semibold">
-            Discount: {previewProduct.discount}
-          </p>
-        )}
-        <p className="text-gray-700">
-          <strong>Category:</strong> {previewProduct.category || "N/A"}
-        </p>
-        <p className="text-gray-700">
-          <strong>Stock:</strong> {previewProduct.stock || "N/A"}
-        </p>
-      </div>
-    </div>
-  </div>
-)}
-
     </>
   );
 };
