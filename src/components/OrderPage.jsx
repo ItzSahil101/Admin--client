@@ -1,6 +1,7 @@
+// src/components/OrderPage.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaEye } from "react-icons/fa";
 import Navbar from "./Navbar"; // adjust path if needed
 
 const STATUS_OPTIONS = ["Cancelled", "Delivering", "Delivered"];
@@ -9,7 +10,6 @@ const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [customOrders, setCustomOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOrderId, setModalOrderId] = useState(null);
   const [modalOrderType, setModalOrderType] = useState(null);
@@ -18,12 +18,10 @@ const OrderPage = () => {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const normalRes = await axios.get(
-          "https://admin-server-2aht.onrender.com/api/orders/normal"
-        );
-        const customRes = await axios.get(
-          "https://admin-server-2aht.onrender.com/api/orders/custom"
-        );
+        const [normalRes, customRes] = await Promise.all([
+          axios.get("https://admin-server-2aht.onrender.com/api/orders/normal"),
+          axios.get("https://admin-server-2aht.onrender.com/api/orders/custom"),
+        ]);
 
         setOrders(normalRes.data.orders || []);
         setCustomOrders(customRes.data.customOrders || []);
@@ -84,84 +82,100 @@ const OrderPage = () => {
     }
   };
 
-  if (loading) return <div className="p-6 text-center">Loading orders...</div>;
+  const handlePreviewOrder = async (productId) => {
+    try {
+      const res = await axios.get(
+        `https://nepcart-backend.onrender.com/api/product/${productId}`
+      );
+      console.log("Product details:", res.data);
+      alert(`Product Name: ${res.data.name || "Unknown"}\nPrice: ₹${res.data.price || "N/A"}`);
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+      alert("Failed to fetch product details");
+    }
+  };
+
+  if (loading)
+    return <div className="p-6 text-center text-gray-600">Loading orders...</div>;
 
   return (
     <>
       <Navbar />
 
-      <div className="p-6 space-y-12 max-w-6xl mx-auto">
+      <div className="p-6 space-y-12 max-w-7xl mx-auto">
         {/* Normal Orders */}
         <section>
           <h2 className="text-2xl font-bold text-blue-700 mb-6 uppercase tracking-widest">
             Normal Orders
           </h2>
           {orders.length === 0 && <p>No normal orders found.</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {orders.map((order) => (
               <div
                 key={order._id}
-                className="p-6 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-lg shadow-lg transform transition-transform hover:scale-105 cursor-pointer"
-                style={{ textTransform: "small-caps" }}
+                className="p-6 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-lg transition-transform transform hover:scale-[1.03]"
               >
-                <p>
-                  <strong>Order ID:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order._id}
-                  </span>
-                </p>
-                <p>
-                  <strong>User ID:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userId}
-                  </span>
-                </p>
-                <p>
-                  <strong>Phone:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userNumber || "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>Location:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userLocation || "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>Total:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    ₹{order.totalPrice}
-                  </span>
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.products && order.products.length > 0
-                      ? order.products[0].status
-                      : "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>Custom Msg:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.cmsg || "N/A"}
-                  </span>
-                </p>
-                {/* <button
-                  onClick={() =>
-                    openModal(
-                      order._id,
-                      order.products && order.products.length > 0
+                <div className="space-y-2 text-sm sm:text-base">
+                  <p>
+                    <strong>Order ID:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order._id}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Product ID:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.productId || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>User ID:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userId}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Phone:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userNumber || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Location:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userLocation || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Total:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      ₹{order.totalPrice}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.products && order.products.length > 0
                         ? order.products[0].status
-                        : "",
-                      "normal"
-                    )
-                  }
-                  className="mt-4 inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 transition-colors px-3 py-1 rounded text-white text-sm"
-                >
-                  <FaPen /> Edit Status
-                </button> */}
+                        : "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Custom Msg:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.cmsg || "N/A"}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 mt-4">
+                  <button
+                    onClick={() => handlePreviewOrder(order.productId)}
+                    className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-2 rounded-lg shadow"
+                  >
+                    <FaEye /> Preview Order
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -173,69 +187,72 @@ const OrderPage = () => {
             Custom Orders
           </h2>
           {customOrders.length === 0 && <p>No custom orders found.</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {customOrders.map((order) => (
               <div
                 key={order._id}
-                className="p-6 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-lg shadow-lg transform transition-transform hover:scale-105 cursor-pointer"
-                style={{ textTransform: "small-caps" }}
+                className="p-6 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-xl shadow-lg transition-transform transform hover:scale-[1.03]"
               >
-                <p>
-                  <strong>Custom Order ID:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order._id}
-                  </span>
-                </p>
-                <p>
-                  <strong>User ID:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userId}
-                  </span>
-                </p>
-                <p>
-                  <strong>Phone:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userNumber || "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>Location:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.userLocation || "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>T-Shirt Color:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.tshirtColor || "N/A"}
-                  </span>
-                </p>
-                <p>
-                  <strong>Total:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    ₹{order.totalPrice}
-                  </span>
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className="bg-pink-200 text-black rounded px-2 py-1">
-                    {order.status}
-                  </span>
-                </p>
+                <div className="space-y-2 text-sm sm:text-base">
+                  <p>
+                    <strong>Custom Order ID:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order._id}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>User ID:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userId}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Phone:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userNumber || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Location:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.userLocation || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>T-Shirt Color:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.tshirtColor || "N/A"}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Total:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      ₹{order.totalPrice}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <span className="bg-pink-200 text-black rounded px-2">
+                      {order.status}
+                    </span>
+                  </p>
+                  {order.imageUrl && (
+                    <img
+                      src={order.imageUrl}
+                      alt="Custom design"
+                      className="w-32 h-32 object-cover border mt-3 rounded-lg"
+                    />
+                  )}
+                </div>
 
-                {order.imageUrl && (
-                  <img
-                    src={order.imageUrl}
-                    alt="Custom design"
-                    className="w-32 border mt-2 rounded"
-                  />
-                )}
-                {/* <button
-                  onClick={() => openModal(order._id, order.status, "custom")}
-                  className="mt-4 inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-800 transition-colors px-3 py-1 rounded text-white text-sm"
-                >
-                  <FaPen /> Edit Status
-                </button> */}
+                <div className="flex flex-wrap items-center gap-3 mt-4">
+                  <button
+                    onClick={() => handlePreviewOrder(order.productId)}
+                    className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-2 rounded-lg shadow"
+                  >
+                    <FaEye /> Preview Order
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -276,7 +293,6 @@ const OrderPage = () => {
             <button
               onClick={closeModal}
               className="absolute top-2 right-3 text-gray-700 hover:text-gray-900 font-bold text-xl"
-              aria-label="Close modal"
             >
               &times;
             </button>
