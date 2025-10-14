@@ -10,11 +10,16 @@ const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [customOrders, setCustomOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOrderId, setModalOrderId] = useState(null);
   const [modalOrderType, setModalOrderType] = useState(null);
   const [modalCurrentStatus, setModalCurrentStatus] = useState("");
 
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [previewProduct, setPreviewProduct] = useState(null);
+
+  // Fetch orders
   useEffect(() => {
     async function fetchOrders() {
       try {
@@ -34,6 +39,7 @@ const OrderPage = () => {
     fetchOrders();
   }, []);
 
+  // Status modal handlers
   const openModal = (id, currentStatus, type) => {
     setModalOrderId(id);
     setModalOrderType(type);
@@ -82,29 +88,34 @@ const OrderPage = () => {
     }
   };
 
-const handlePreviewOrder = async (productId) => {
-  try {
-    // Make GET request to backend
-    const res = await axios.get(
-      `https://nepcart-backend.onrender.com/api/product/${productId}`
-    );
+  // Product preview modal handlers
+  const handlePreviewOrder = async (productId) => {
+    try {
+      const res = await axios.get(
+        `https://admin-server-2aht.onrender.com/api/products/data/${productId}`
+      );
+      const product = res.data;
+      if (product) {
+        setPreviewProduct(product);
+        setProductModalOpen(true);
+      } else {
+        alert("Product not found");
+      }
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+      alert("Failed to fetch product details");
+    }
+  };
 
-    // Log full product details in console
-    console.log("Product details:", res.data);
-
-    // Show basic info in alert
-    alert(
-      `Product Name: ${res.data.name || "Unknown"}\nPrice: ₹${res.data.price || "N/A"}`
-    );
-  } catch (err) {
-    console.error("Error fetching product details:", err);
-    alert("Failed to fetch product details");
-  }
-};
-
+  const closeProductModal = () => {
+    setProductModalOpen(false);
+    setPreviewProduct(null);
+  };
 
   if (loading)
-    return <div className="p-6 text-center text-gray-600">Loading orders...</div>;
+    return (
+      <div className="p-6 text-center text-gray-600">Loading orders...</div>
+    );
 
   return (
     <>
@@ -267,7 +278,7 @@ const handlePreviewOrder = async (productId) => {
         </section>
       </div>
 
-      {/* Modal Overlay */}
+      {/* Status Update Modal */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-80 max-w-full mx-4 shadow-lg relative">
@@ -304,6 +315,39 @@ const handlePreviewOrder = async (productId) => {
             >
               &times;
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Product Preview Modal */}
+      {productModalOpen && previewProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-96 max-w-full mx-4 shadow-lg relative animate-slide-in">
+            <button
+              onClick={closeProductModal}
+              className="absolute top-3 right-4 text-gray-700 hover:text-gray-900 font-bold text-xl"
+            >
+              &times;
+            </button>
+            <h3 className="text-2xl font-bold mb-4 text-center">
+              {previewProduct.name}
+            </h3>
+            <div className="space-y-3 text-gray-700">
+              <p>
+                <strong>Price:</strong> ₹{previewProduct.price}
+              </p>
+              <p>
+                <strong>Description:</strong>{" "}
+                {previewProduct.description || "N/A"}
+              </p>
+              {previewProduct.imageUrl && (
+                <img
+                  src={previewProduct.imageUrl}
+                  alt={previewProduct.name}
+                  className="w-full h-48 object-cover rounded-lg mt-2"
+                />
+              )}
+            </div>
           </div>
         </div>
       )}
