@@ -246,7 +246,6 @@ const fetchUserName = async (userId) => {
                     <span className="bg-pink-200 text-black rounded px-2">
                       {order._id}
                     </span>
-                    {console.log(order)}
                   </p>
                   <p>
                     <strong>User:</strong>{" "}
@@ -308,37 +307,52 @@ const fetchUserName = async (userId) => {
       </div>
 
       {/* Product Preview Modal */}
-      {productModalOpen && previewProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-96 max-w-full mx-4 shadow-lg relative animate-slide-in">
-            <button
-              onClick={closeProductModal}
-              className="absolute top-3 right-4 text-gray-700 hover:text-gray-900 font-bold text-xl"
-            >
-              &times;
-            </button>
-            <h3 className="text-2xl font-bold mb-4 text-center">
-              {previewProduct.name}
-            </h3>
-            <div className="space-y-3 text-gray-700">
-              <p>
-                <strong>Price:</strong> ₹{previewProduct.price}
-              </p>
-              <p>
-                <strong>Description:</strong>{" "}
-                {previewProduct.description || "N/A"}
-              </p>
-              {previewProduct.imageUrl && (
-                <img
-                  src={previewProduct.imageUrl}
-                  alt={previewProduct.name}
-                  className="w-full h-48 object-cover rounded-lg mt-2"
-                />
-              )}
-            </div>
-          </div>
-        </div>
+     {/* Product Preview Modal */}
+{productModalOpen && previewProduct && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
+      {/* Close Button */}
+      <button
+        onClick={closeProductModal}
+        className="absolute top-3 right-4 text-gray-700 hover:text-gray-900 font-bold text-2xl"
+      >
+        &times;
+      </button>
+
+      {/* Product Image */}
+      {previewProduct.url && (
+        <img
+          src={previewProduct.url}
+          alt={previewProduct.name}
+          className="w-full h-64 sm:h-72 md:h-80 object-cover"
+        />
       )}
+
+      {/* Product Info */}
+      <div className="p-6 space-y-3">
+        <h3 className="text-2xl font-bold text-center">{previewProduct.name}</h3>
+        <p className="text-gray-700">
+          <strong>Description:</strong> {previewProduct.desc || "N/A"}
+        </p>
+        <p className="text-gray-700">
+          <strong>Price:</strong> ₹{previewProduct.price}
+        </p>
+        {previewProduct.discount && (
+          <p className="text-green-600 font-semibold">
+            Discount: {previewProduct.discount}
+          </p>
+        )}
+        <p className="text-gray-700">
+          <strong>Category:</strong> {previewProduct.category || "N/A"}
+        </p>
+        <p className="text-gray-700">
+          <strong>Stock:</strong> {previewProduct.stock || "N/A"}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
     </>
   );
 };
