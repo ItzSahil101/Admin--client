@@ -27,7 +27,7 @@ const fetchUserName = async (userId) => {
 
   try {
     const res = await axios.get(
-      `http://localhost:8000/api/products/data/user/${userId}`
+      `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
     );
 
     // Log response for clarity
