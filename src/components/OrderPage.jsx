@@ -20,7 +20,6 @@ const OrderPage = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [previewProduct, setPreviewProduct] = useState(null);
 
-  // ✅ Function to fetch username by userId
  // ✅ Function to fetch username by userId
 const fetchUserName = async (userId) => {
   if (!userId || userNames[userId]) return; // avoid refetching
@@ -29,9 +28,7 @@ const fetchUserName = async (userId) => {
     const res = await axios.get(
       `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
     );
-
-    // Log response for clarity
-    // console.log("Fetched user:", res.data);
+    console.log(res);
 
     if (res.data && res.data.userName) {
       setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
