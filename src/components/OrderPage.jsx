@@ -28,18 +28,18 @@ const fetchUserName = async (userId) => {
     const res = await axios.get(
       `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
     );
-    console.log(res);
 
     if (res.data && res.data.userName) {
       setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
     } else {
-      setUserNames((prev) => ({ ...prev, [userId]: "Unknown User" }));
+      setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
     }
   } catch (err) {
     console.error("Error fetching user name:", err);
-    setUserNames((prev) => ({ ...prev, [userId]: "Unknown User" }));
+    setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
   }
 };
+
 
   // Fetch orders
   useEffect(() => {
