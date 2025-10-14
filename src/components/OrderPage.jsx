@@ -246,6 +246,7 @@ const fetchUserName = async (userId) => {
                     <span className="bg-pink-200 text-black rounded px-2">
                       {order._id}
                     </span>
+                    {console.log(order)}
                   </p>
                   <p>
                     <strong>User:</strong>{" "}
