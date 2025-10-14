@@ -309,12 +309,13 @@ const fetchUserName = async (userId) => {
       {/* Product Preview Modal */}
      {/* Product Preview Modal */}
 {productModalOpen && previewProduct && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-auto">
+    <div className="relative bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
       {/* Close Button */}
       <button
         onClick={closeProductModal}
-        className="absolute top-3 right-4 text-gray-700 hover:text-gray-900 font-bold text-2xl"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-700 hover:text-gray-900 font-bold text-3xl sm:text-4xl transition-transform transform hover:scale-110"
+        aria-label="Close modal"
       >
         &times;
       </button>
@@ -330,7 +331,9 @@ const fetchUserName = async (userId) => {
 
       {/* Product Info */}
       <div className="p-6 space-y-3">
-        <h3 className="text-2xl font-bold text-center">{previewProduct.name}</h3>
+        <h3 className="text-2xl sm:text-3xl font-bold text-center">
+          {previewProduct.name}
+        </h3>
         <p className="text-gray-700">
           <strong>Description:</strong> {previewProduct.desc || "N/A"}
         </p>
