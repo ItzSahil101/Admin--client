@@ -101,10 +101,10 @@ export default function AddProduct({ onClose, onSuccess }) {
                 required
                 className="w-full px-4 py-2 border border-blue-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
               >
-                <option value="gym">(Gym +suppliment)</option>
+                <option value="gym">(Gym + suppliment)</option>
                 <option value="tech">Electronic</option>
                 <option value="fashion">Clothes</option>
-                <option value="gw">Gym Wear</option>
+                <option value="gw">Gym Wear + Diet</option>
                 <option value="sport">Sports</option>
                 <option value="sketch">Sketch</option>
                 <option value="book">Books</option>
