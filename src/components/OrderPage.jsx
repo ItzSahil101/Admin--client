@@ -314,7 +314,7 @@ const fetchUserName = async (userId) => {
       {/* Close Button */}
       <button
         onClick={closeProductModal}
-        className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-700 hover:text-gray-900 font-bold text-3xl sm:text-4xl transition-transform transform hover:scale-110"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white text-gray-800 hover:text-gray-900 font-bold w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110"
         aria-label="Close modal"
       >
         &times;
@@ -325,7 +325,7 @@ const fetchUserName = async (userId) => {
         <img
           src={previewProduct.url}
           alt={previewProduct.name}
-          className="w-full h-64 sm:h-72 md:h-80 object-cover"
+          className="w-full h-48 sm:h-56 md:h-60 object-contain"
         />
       )}
 
