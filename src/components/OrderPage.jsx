@@ -9,6 +9,7 @@ const STATUS_OPTIONS = ["Cancelled", "Delivering", "Delivered"];
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [customOrders, setCustomOrders] = useState([]);
+  const [userNames, setUserNames] = useState({}); // ✅ store userId -> name map
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,6 +20,30 @@ const OrderPage = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [previewProduct, setPreviewProduct] = useState(null);
 
+  // ✅ Function to fetch username by userId
+ // ✅ Function to fetch username by userId
+const fetchUserName = async (userId) => {
+  if (!userId || userNames[userId]) return; // avoid refetching
+
+  try {
+    const res = await axios.get(
+      `http://localhost:8000/api/products/data/user/${userId}`
+    );
+
+    // Log response for clarity
+    // console.log("Fetched user:", res.data);
+
+    if (res.data && res.data.userName) {
+      setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
+    } else {
+      setUserNames((prev) => ({ ...prev, [userId]: "Unknown User" }));
+    }
+  } catch (err) {
+    console.error("Error fetching user name:", err);
+    setUserNames((prev) => ({ ...prev, [userId]: "Unknown User" }));
+  }
+};
+
   // Fetch orders
   useEffect(() => {
     async function fetchOrders() {
@@ -28,8 +53,20 @@ const OrderPage = () => {
           axios.get("https://admin-server-2aht.onrender.com/api/orders/custom"),
         ]);
 
-        setOrders(normalRes.data.orders || []);
-        setCustomOrders(customRes.data.customOrders || []);
+        const normalOrders = normalRes.data.orders || [];
+        const customOrdersData = customRes.data.customOrders || [];
+
+        setOrders(normalOrders);
+        setCustomOrders(customOrdersData);
+
+        // ✅ fetch usernames for all userIds
+        const allUserIds = [
+          ...new Set([
+            ...normalOrders.map((o) => o.userId),
+            ...customOrdersData.map((o) => o.userId),
+          ]),
+        ];
+        allUserIds.forEach((id) => fetchUserName(id));
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -142,15 +179,9 @@ const OrderPage = () => {
                     </span>
                   </p>
                   <p>
-                    <strong>Product ID:</strong>{" "}
+                    <strong>User:</strong>{" "}
                     <span className="bg-pink-200 text-black rounded px-2">
-                      {order.productId || "N/A"}
-                    </span>
-                  </p>
-                  <p>
-                    <strong>User ID:</strong>{" "}
-                    <span className="bg-pink-200 text-black rounded px-2">
-                      {order.userId}
+                      {userNames[order.userId] || "Loading..."}
                     </span>
                   </p>
                   <p>
@@ -220,9 +251,9 @@ const OrderPage = () => {
                     </span>
                   </p>
                   <p>
-                    <strong>User ID:</strong>{" "}
+                    <strong>User:</strong>{" "}
                     <span className="bg-pink-200 text-black rounded px-2">
-                      {order.userId}
+                      {userNames[order.userId] || "Loading..."}
                     </span>
                   </p>
                   <p>
@@ -277,47 +308,6 @@ const OrderPage = () => {
           </div>
         </section>
       </div>
-
-      {/* Status Update Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-80 max-w-full mx-4 shadow-lg relative">
-            <h3 className="text-xl font-semibold mb-4 text-center">
-              Update Order Status
-            </h3>
-            <div className="space-y-3">
-              {STATUS_OPTIONS.map((statusOption) => (
-                <button
-                  key={statusOption}
-                  onClick={() => handleStatusChange(statusOption)}
-                  className={`w-full py-2 rounded text-white text-center
-                    ${
-                      statusOption === "Cancelled"
-                        ? "bg-red-500 hover:bg-red-600"
-                        : statusOption === "Delivering"
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-green-500 hover:bg-green-600"
-                    }
-                    ${
-                      modalCurrentStatus === statusOption
-                        ? "ring-4 ring-indigo-400"
-                        : ""
-                    }
-                  `}
-                >
-                  {statusOption}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-3 text-gray-700 hover:text-gray-900 font-bold text-xl"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Product Preview Modal */}
       {productModalOpen && previewProduct && (
