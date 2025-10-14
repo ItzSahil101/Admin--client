@@ -82,18 +82,26 @@ const OrderPage = () => {
     }
   };
 
-  const handlePreviewOrder = async (productId) => {
-    try {
-      const res = await axios.get(
-        `https://nepcart-backend.onrender.com/api/product/${productId}`
-      );
-      console.log("Product details:", res.data);
-      alert(`Product Name: ${res.data.name || "Unknown"}\nPrice: ₹${res.data.price || "N/A"}`);
-    } catch (err) {
-      console.error("Error fetching product details:", err);
-      alert("Failed to fetch product details");
-    }
-  };
+const handlePreviewOrder = async (productId) => {
+  try {
+    // Make GET request to backend
+    const res = await axios.get(
+      `https://nepcart-backend.onrender.com/api/product/${productId}`
+    );
+
+    // Log full product details in console
+    console.log("Product details:", res.data);
+
+    // Show basic info in alert
+    alert(
+      `Product Name: ${res.data.name || "Unknown"}\nPrice: ₹${res.data.price || "N/A"}`
+    );
+  } catch (err) {
+    console.error("Error fetching product details:", err);
+    alert("Failed to fetch product details");
+  }
+};
+
 
   if (loading)
     return <div className="p-6 text-center text-gray-600">Loading orders...</div>;
@@ -167,8 +175,6 @@ const OrderPage = () => {
                     </span>
                   </p>
                 </div>
-
-                {console.log(order)}
 
                 <div className="flex flex-wrap items-center gap-3 mt-4">
                   <button
