@@ -7,6 +7,7 @@ import Main from "./components/Main";
 import Login from "./components/Login";
 import Feedback from "./components/Feedback";
 import Users from "./components/User";
+import Update from "./components/Update";
 
 /** helper to safely read token data from localStorage */
 function getTokenData() {
@@ -93,6 +94,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Users />
+            </ProtectedRoute>
+          }
+        />
+                   <Route
+          path="/updates"
+          element={
+            <ProtectedRoute>
+              <Update />
             </ProtectedRoute>
           }
         />
