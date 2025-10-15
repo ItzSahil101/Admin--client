@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ChatBubbleLeftRightIcon, UserCircleIcon, PhoneIcon, ClockIcon } from "@heroicons/react/24/solid";
+import Navbar from "./Navbar";
 
 const feedbackData = [
   {
@@ -21,6 +22,8 @@ const feedbackData = [
 
 const Feedback = () => {
   return (
+    <>
+    <Navbar />
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center px-4 py-24 sm:px-8 pt-32">
       {/* Header */}
       <motion.h1
@@ -88,6 +91,7 @@ const Feedback = () => {
         <p>Built with ❤️ by NepMart Admin Team</p>
       </motion.div>
     </div>
+    </>
   );
 };
 
