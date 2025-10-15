@@ -8,6 +8,7 @@ import {
   ClockIcon,
   ShoppingCartIcon,
   TrashIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import Navbar from "./Navbar";
 
@@ -15,7 +16,11 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch users from backend
+  // Modal state
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, userId: null });
+  const [confirmText, setConfirmText] = useState("");
+
+  // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -34,16 +39,13 @@ const Users = () => {
 
   // Delete user
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    if (!confirmDelete) return;
-
     try {
       await axios.delete(
         `https://admin-server-2aht.onrender.com/api/extra/users/${id}`
       );
       setUsers((prev) => prev.filter((user) => user._id !== id));
+      setDeleteModal({ isOpen: false, userId: null });
+      setConfirmText("");
       alert("User deleted successfully");
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -55,7 +57,6 @@ const Users = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center px-4 py-24 sm:px-8 pt-32">
-        {/* Header */}
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,7 +70,6 @@ const Users = () => {
           All Registered Users
         </motion.h1>
 
-        {/* Loading */}
         {loading ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -95,7 +95,9 @@ const Users = () => {
                 >
                   {/* Delete Button */}
                   <button
-                    onClick={() => handleDelete(user._id)}
+                    onClick={() =>
+                      setDeleteModal({ isOpen: true, userId: user._id })
+                    }
                     className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-transform transform hover:scale-110"
                     title="Delete User"
                   >
@@ -156,7 +158,65 @@ const Users = () => {
           </div>
         )}
 
-        {/* Footer */}
+        {/* Delete Modal */}
+        <AnimatePresence>
+          {deleteModal.isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+            >
+              <motion.div
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.8 }}
+                className="bg-slate-900 p-6 rounded-xl w-full max-w-md text-white shadow-xl relative"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => {
+                    setDeleteModal({ isOpen: false, userId: null });
+                    setConfirmText("");
+                  }}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+
+                <h2 className="text-2xl font-bold mb-4">Delete User</h2>
+                <p className="mb-2 text-gray-300">
+                  Type <span className="font-bold">DELETE</span> to confirm.
+                </p>
+                <input
+                  type="text"
+                  value={confirmText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  placeholder="Type DELETE here"
+                  className="w-full px-4 py-2 rounded-md bg-slate-800 text-white border border-gray-600 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={() => {
+                    if (confirmText.toLowerCase() === "delete") {
+                      handleDelete(deleteModal.userId);
+                    } else {
+                      alert("Text does not match! Type DELETE to confirm.");
+                    }
+                  }}
+                  disabled={confirmText.toLowerCase() !== "delete"}
+                  className={`w-full py-2 rounded-md font-semibold ${
+                    confirmText.toLowerCase() === "delete"
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-red-400 cursor-not-allowed"
+                  } transition-colors`}
+                >
+                  Delete
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
