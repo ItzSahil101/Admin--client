@@ -134,7 +134,7 @@ export default function App() {
     <div className="min-h-screen bg-white font-sans text-gray-800">
       <Navbar />
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8 pt-24">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Product Dashboard</h1>
           <button

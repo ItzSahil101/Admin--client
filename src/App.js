@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import OrderPage from "./components/OrderPage";
 import Main from "./components/Main";
 import Login from "./components/Login";
+import Feedback from "./components/Feedback";
 
 /** helper to safely read token data from localStorage */
 function getTokenData() {
@@ -75,6 +76,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Main />
+            </ProtectedRoute>
+          }
+        />
+             <Route
+          path="/feedback"
+          element={
+            <ProtectedRoute>
+              <Feedback />
             </ProtectedRoute>
           }
         />
