@@ -6,6 +6,7 @@ import OrderPage from "./components/OrderPage";
 import Main from "./components/Main";
 import Login from "./components/Login";
 import Feedback from "./components/Feedback";
+import Users from "./components/User";
 
 /** helper to safely read token data from localStorage */
 function getTokenData() {
@@ -84,6 +85,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Feedback />
+            </ProtectedRoute>
+          }
+        />
+                 <Route
+          path="/user-track"
+          element={
+            <ProtectedRoute>
+              <Users />
             </ProtectedRoute>
           }
         />
