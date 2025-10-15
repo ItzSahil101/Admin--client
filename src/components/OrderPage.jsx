@@ -9,7 +9,7 @@ const STATUS_OPTIONS = ["Cancelled", "Delivering", "Delivered"];
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [customOrders, setCustomOrders] = useState([]);
-  const [userNames, setUserNames] = useState({}); // ✅ store userId -> name map
+  const [userNames, setUserNames] = useState({});
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -20,27 +20,25 @@ const OrderPage = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [previewProduct, setPreviewProduct] = useState(null);
 
-  // ✅ Function to fetch username by userId
+  // ✅ Fetch username by userId
   const fetchUserName = async (userId) => {
-    if (!userId || userNames[userId]) return; // avoid refetching
-
+    if (!userId || userNames[userId]) return;
     try {
       const res = await axios.get(
         `https://admin-server-2aht.onrender.com/api/products/data/user/${userId}`
       );
-
       if (res.data && res.data.userName) {
         setUserNames((prev) => ({ ...prev, [userId]: res.data.userName }));
       } else {
-        setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
+        setUserNames((prev) => ({ ...prev, [userId]: userId }));
       }
     } catch (err) {
       console.error("Error fetching user name:", err);
-      setUserNames((prev) => ({ ...prev, [userId]: userId })); // fallback
+      setUserNames((prev) => ({ ...prev, [userId]: userId }));
     }
   };
 
-  // Fetch orders
+  // ✅ Fetch orders
   useEffect(() => {
     async function fetchOrders() {
       try {
@@ -55,7 +53,6 @@ const OrderPage = () => {
         setOrders(normalOrders);
         setCustomOrders(customOrdersData);
 
-        // ✅ fetch usernames for all userIds
         const allUserIds = [
           ...new Set([
             ...normalOrders.map((o) => o.userId),
@@ -72,7 +69,7 @@ const OrderPage = () => {
     fetchOrders();
   }, []);
 
-  // Status modal handlers
+  // ✅ Status modal handlers
   const openModal = (id, currentStatus, type) => {
     setModalOrderId(id);
     setModalOrderType(type);
@@ -121,7 +118,7 @@ const OrderPage = () => {
     }
   };
 
-  // Product preview modal handlers
+  // ✅ Product preview
   const handlePreviewOrder = async (productId) => {
     try {
       const res = await axios.get(
@@ -145,6 +142,24 @@ const OrderPage = () => {
     setPreviewProduct(null);
   };
 
+  // ✅ Delete order (POST API)
+  const handleDeleteOrder = async (orderId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this order?"
+    );
+    if (!confirmDelete) return;
+    try {
+      await axios.post(
+        `https://admin-server-2aht.onrender.com/api/orders/deln/${orderId}`
+      );
+      alert("Order deleted successfully!");
+      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+    } catch (err) {
+      console.error("Error deleting order:", err);
+      alert("Failed to delete order");
+    }
+  };
+
   if (loading)
     return (
       <div className="p-6 text-center text-gray-600">Loading orders...</div>
@@ -155,7 +170,7 @@ const OrderPage = () => {
       <Navbar />
 
       <div className="p-6 space-y-12 max-w-7xl mx-auto">
-        {/* Normal Orders */}
+        {/* ✅ Normal Orders */}
         <section>
           <h2 className="text-2xl font-bold text-blue-700 mb-6 uppercase tracking-widest">
             Normal Orders
@@ -219,7 +234,15 @@ const OrderPage = () => {
                     onClick={() => handlePreviewOrder(order.productId)}
                     className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-2 rounded-lg shadow"
                   >
-                    <FaEye /> Preview Order
+                    <FaEye /> Preview
+                  </button>
+
+                  {/* ✅ Delete Button */}
+                  <button
+                    onClick={() => handleDeleteOrder(order._id)}
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg shadow"
+                  >
+                    🗑️ Delete
                   </button>
                 </div>
               </div>
@@ -227,7 +250,7 @@ const OrderPage = () => {
           </div>
         </section>
 
-        {/* Custom Orders */}
+        {/* ✅ Custom Orders */}
         <section>
           <h2 className="text-2xl font-bold text-orange-700 mb-6 uppercase tracking-widest">
             Custom Orders
@@ -296,7 +319,7 @@ const OrderPage = () => {
                     onClick={() => handlePreviewOrder(order.productId)}
                     className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-2 rounded-lg shadow"
                   >
-                    <FaEye /> Preview Order
+                    <FaEye /> Preview
                   </button>
                 </div>
               </div>
@@ -305,12 +328,10 @@ const OrderPage = () => {
         </section>
       </div>
 
-      {/* Product Preview Modal */}
-      {/* Product Preview Modal */}
+      {/* ✅ Product Preview Modal */}
       {productModalOpen && previewProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-auto">
           <div className="relative bg-white rounded-xl shadow-lg max-w-md w-full overflow-hidden animate-slide-in">
-            {/* Close Button */}
             <button
               onClick={closeProductModal}
               className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-orange-500 text-white font-bold w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110"
@@ -319,7 +340,6 @@ const OrderPage = () => {
               &times;
             </button>
 
-            {/* Product Image */}
             {previewProduct.url && (
               <img
                 src={previewProduct.url}
@@ -328,7 +348,6 @@ const OrderPage = () => {
               />
             )}
 
-            {/* Product Info */}
             <div className="p-6 space-y-3">
               <h3 className="text-2xl sm:text-3xl font-bold text-center">
                 {previewProduct.name}
