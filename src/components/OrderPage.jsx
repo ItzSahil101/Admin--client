@@ -1,8 +1,8 @@
 // src/components/OrderPage.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaPen, FaEye } from "react-icons/fa";
-import Navbar from "./Navbar"; // adjust path if needed
+import { FaPen, FaEye, FaTrashAlt, FaTimes } from "react-icons/fa";
+import Navbar from "./Navbar";
 
 const STATUS_OPTIONS = ["Cancelled", "Delivering", "Delivered"];
 
@@ -12,13 +12,11 @@ const OrderPage = () => {
   const [userNames, setUserNames] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalOrderId, setModalOrderId] = useState(null);
-  const [modalOrderType, setModalOrderType] = useState(null);
-  const [modalCurrentStatus, setModalCurrentStatus] = useState("");
-
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [previewProduct, setPreviewProduct] = useState(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
 
   // ✅ Fetch username by userId
   const fetchUserName = async (userId) => {
@@ -69,55 +67,6 @@ const OrderPage = () => {
     fetchOrders();
   }, []);
 
-  // ✅ Status modal handlers
-  const openModal = (id, currentStatus, type) => {
-    setModalOrderId(id);
-    setModalOrderType(type);
-    setModalCurrentStatus(currentStatus);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setModalOrderId(null);
-    setModalOrderType(null);
-    setModalCurrentStatus("");
-  };
-
-  const handleStatusChange = async (newStatus) => {
-    if (!modalOrderId) return;
-    try {
-      await axios.put(
-        `https://admin-server-2aht.onrender.com/api/orders/${modalOrderType}/${modalOrderId}`,
-        { status: newStatus }
-      );
-
-      if (modalOrderType === "custom") {
-        setCustomOrders((prev) =>
-          prev.map((order) =>
-            order._id === modalOrderId ? { ...order, status: newStatus } : order
-          )
-        );
-      } else {
-        setOrders((prev) =>
-          prev.map((order) => {
-            if (order._id === modalOrderId) {
-              const updatedProducts = [...(order.products || [])];
-              if (updatedProducts.length > 0)
-                updatedProducts[0].status = newStatus;
-              return { ...order, products: updatedProducts };
-            }
-            return order;
-          })
-        );
-      }
-      closeModal();
-    } catch (err) {
-      console.error("Failed to update status", err);
-      alert("Failed to update status");
-    }
-  };
-
   // ✅ Product preview
   const handlePreviewOrder = async (productId) => {
     try {
@@ -142,18 +91,27 @@ const OrderPage = () => {
     setPreviewProduct(null);
   };
 
-  // ✅ Delete order (POST API)
-  const handleDeleteOrder = async (orderId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this order?"
-    );
-    if (!confirmDelete) return;
+  // ✅ Open delete confirmation modal
+  const openDeleteModal = (order) => {
+    setOrderToDelete(order);
+    setDeleteModalOpen(true);
+  };
+
+  // ✅ Close delete modal
+  const closeDeleteModal = () => {
+    setOrderToDelete(null);
+    setDeleteModalOpen(false);
+  };
+
+  // ✅ Confirm delete
+  const confirmDelete = async () => {
+    if (!orderToDelete) return;
     try {
       await axios.post(
-        `https://admin-server-2aht.onrender.com/api/orders/deln/${orderId}`
+        `https://admin-server-2aht.onrender.com/api/orders/deln/${orderToDelete._id}`
       );
-      alert("Order deleted successfully!");
-      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+      setOrders((prev) => prev.filter((o) => o._id !== orderToDelete._id));
+      closeDeleteModal();
     } catch (err) {
       console.error("Error deleting order:", err);
       alert("Failed to delete order");
@@ -237,12 +195,12 @@ const OrderPage = () => {
                     <FaEye /> Preview
                   </button>
 
-                  {/* ✅ Delete Button */}
+                  {/* ✅ Delete Button opens modal */}
                   <button
-                    onClick={() => handleDeleteOrder(order._id)}
+                    onClick={() => openDeleteModal(order)}
                     className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg shadow"
                   >
-                    🗑️ Delete
+                    <FaTrashAlt /> Delete
                   </button>
                 </div>
               </div>
@@ -313,20 +271,46 @@ const OrderPage = () => {
                     />
                   )}
                 </div>
-
-                <div className="flex flex-wrap items-center gap-3 mt-4">
-                  <button
-                    onClick={() => handlePreviewOrder(order.productId)}
-                    className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-3 py-2 rounded-lg shadow"
-                  >
-                    <FaEye /> Preview
-                  </button>
-                </div>
               </div>
             ))}
           </div>
         </section>
       </div>
+
+      {/* ✅ Delete Confirmation Modal */}
+      {deleteModalOpen && orderToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full relative text-center">
+            <button
+              onClick={closeDeleteModal}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600 text-2xl"
+            >
+              <FaTimes />
+            </button>
+            <FaTrashAlt className="text-red-500 text-5xl mx-auto mb-3" />
+            <h3 className="text-xl font-bold text-gray-800 mb-2">
+              Delete this order?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to permanently delete this order?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-transform transform hover:scale-105"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={closeDeleteModal}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-5 py-2 rounded-lg shadow transition-transform transform hover:scale-105"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ✅ Product Preview Modal */}
       {productModalOpen && previewProduct && (
