@@ -70,7 +70,7 @@ const Navbar = () => {
 
            <Link
             to="/updates"
-            className="bg-green-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
           >
             Updates
           </Link>
