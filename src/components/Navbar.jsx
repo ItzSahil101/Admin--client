@@ -1,7 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Bars3Icon, XMarkIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline"; // Added download icon
+import { Bars3Icon, XMarkIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,12 +13,12 @@ const Navbar = () => {
 
   return (
     <nav className="bg-blue-500 shadow-lg border-b border-blue-400 fixed w-full z-50">
-      <div className="container mx-auto flex justify-between items-center px-6 py-4">
+      <div className="container mx-auto flex justify-between items-center px-5 py-4">
         {/* Left Section (Logo + Download Button) */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-5">
           {/* Logo */}
           <h1
-            className="text-2xl font-semibold text-white select-none"
+            className="text-xl sm:text-2xl font-semibold text-white select-none"
             style={{
               fontFamily: "'Playfair Display', serif",
               fontVariantCaps: "small-caps",
@@ -33,7 +33,7 @@ const Navbar = () => {
           <a
             href="/admin.apk"
             download
-            className="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white font-semibold py-2 px-4 rounded-lg shadow transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            className="flex items-center gap-2 bg-gray-700/70 hover:bg-gray-600/80 text-white font-medium py-2 px-3 sm:px-4 rounded-lg shadow-md backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
             title="Download Admin App"
           >
             <ArrowDownTrayIcon className="h-5 w-5 text-white" />
@@ -57,11 +57,11 @@ const Navbar = () => {
         <div
           className={`flex flex-col sm:flex-row items-center sm:gap-5 absolute sm:static bg-blue-500 sm:bg-transparent left-0 w-full sm:w-auto transition-all duration-300 ease-in-out ${
             menuOpen
-              ? "top-[72px] opacity-100 visible p-6 sm:p-0 space-y-4 sm:space-y-0"
-              : "top-[-500px] opacity-0 sm:opacity-100 sm:visible"
+              ? "top-[70px] opacity-100 visible p-6 sm:p-0 space-y-4 sm:space-y-0"
+              : "top-[-400px] opacity-0 sm:opacity-100 sm:visible"
           }`}
         >
-          {/* Manage Text */}
+          {/* Manage Label */}
           <div
             className="text-white font-medium text-lg tracking-wide text-center sm:text-left mb-2 sm:mb-0"
             style={{
@@ -74,42 +74,42 @@ const Navbar = () => {
             Manage
           </div>
 
-          {/* Order Track Button */}
+          {/* Order Track */}
           <Link
             to="/order"
-            className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
           >
             Order Track
           </Link>
 
-          {/* Updates Button */}
+          {/* Updates */}
           <Link
             to="/updates"
-            className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
           >
             Updates
           </Link>
 
-          {/* User Track Button */}
+          {/* User Track */}
           <Link
             to="/user-track"
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
           >
             User Track
           </Link>
 
-          {/* Feedback Button */}
+          {/* Feedback */}
           <Link
             to="/feedback"
-            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
           >
             Feedback
           </Link>
 
-          {/* Logout Button */}
+          {/* Logout */}
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
           >
             Logout
           </button>
