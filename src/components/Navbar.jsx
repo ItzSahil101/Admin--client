@@ -1,31 +1,45 @@
+// src/components/Navbar.jsx
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Heroicons v2
+import { Link } from "react-router-dom";
+import { Bars3Icon, XMarkIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline"; // Added download icon
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
-    window.location.reload(); // refresh page
+    window.location.reload();
   };
 
   return (
     <nav className="bg-blue-500 shadow-lg border-b border-blue-400 fixed w-full z-50">
       <div className="container mx-auto flex justify-between items-center px-6 py-4">
-        {/* Logo */}
-        <h1
-          className="text-2xl font-semibold text-white select-none"
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontVariantCaps: "small-caps",
-            letterSpacing: "0.12em",
-            textShadow: "0 2px 6px rgba(0,0,0,0.25)",
-          }}
-        >
-          <Link to="/">NepMart Admin</Link>
-        </h1>
+        {/* Left Section (Logo + Download Button) */}
+        <div className="flex items-center gap-4">
+          {/* Logo */}
+          <h1
+            className="text-2xl font-semibold text-white select-none"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontVariantCaps: "small-caps",
+              letterSpacing: "0.12em",
+              textShadow: "0 2px 6px rgba(0,0,0,0.25)",
+            }}
+          >
+            <Link to="/">NepMart Admin</Link>
+          </h1>
+
+          {/* Download App Button */}
+          <a
+            href="/admin.apk"
+            download
+            className="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white font-semibold py-2 px-4 rounded-lg shadow transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            title="Download Admin App"
+          >
+            <ArrowDownTrayIcon className="h-5 w-5 text-white" />
+            <span className="hidden sm:inline">Download App</span>
+          </a>
+        </div>
 
         {/* Hamburger Icon (Mobile) */}
         <button
@@ -68,7 +82,8 @@ const Navbar = () => {
             Order Track
           </Link>
 
-           <Link
+          {/* Updates Button */}
+          <Link
             to="/updates"
             className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-transform transform hover:scale-105 hover:shadow-lg text-center w-full sm:w-auto"
           >
