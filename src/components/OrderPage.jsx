@@ -40,29 +40,34 @@ const OrderPage = () => {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const [normalRes, customRes] = await Promise.all([
+        const [normalRes, customRes] = await Promise.allSettled([
           axios.get("https://admin-server-2aht.onrender.com/api/orders/normal"),
           axios.get("https://admin-server-2aht.onrender.com/api/orders/custom"),
         ]);
-        
-        console.log("NORMAL:", normalRes.data);
-        console.log("CUSTOM:", customRes.data);
-        
-        const normalOrders = normalRes.data.orders || [];
-        const customOrdersData = customRes.data.customOrders || [];
-        
-        console.log("Parsed normal orders:", normalOrders);
-        console.log("Parsed custom orders:", customOrdersData);
-
+  
+        const normalOrders =
+          normalRes.status === "fulfilled"
+            ? normalRes.value.data.orders || []
+            : [];
+  
+        const customOrdersData =
+          customRes.status === "fulfilled"
+            ? customRes.value.data.customOrders || []
+            : [];
+  
+        console.log("NORMAL:", normalOrders);
+        console.log("CUSTOM:", customOrdersData);
+  
         setOrders(normalOrders);
         setCustomOrders(customOrdersData);
-
+  
         const allUserIds = [
           ...new Set([
             ...normalOrders.map((o) => o.userId),
             ...customOrdersData.map((o) => o.userId),
           ]),
         ];
+  
         allUserIds.forEach((id) => fetchUserName(id));
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -70,6 +75,7 @@ const OrderPage = () => {
         setLoading(false);
       }
     }
+  
     fetchOrders();
   }, []);
 
