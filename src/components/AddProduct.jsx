@@ -108,7 +108,7 @@ export default function AddProduct({ onClose, onSuccess }) {
                 <option value="sport">Sports</option>
                 <option value="sketch">Sketch</option>
                 <option value="book">Books</option>
-                 <option value="food">Foods</option>
+                 <option value="cosmetic">Cosmetic</option>
 
               </select>
             </div>
